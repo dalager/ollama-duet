@@ -5,6 +5,7 @@ Let two Ollama models talk to each other.
 ## requirements
 
 - Python
+- Poetry (optional, but recommended)
 - Ollama installation
 
 ## What
@@ -33,3 +34,15 @@ System prompt:
 The result is a conversation between the two models, where the cat is trying to pretend to be a human, and the human is trying to make the cat admit that it is a cat.
 
 Rendered to html: <https://github.com/dalager/ollama-duet/blob/main/conversation_history.html>, preview: <https://htmlpreview.github.io/?https://github.com/dalager/ollama-duet/blob/main/conversation_history.html>
+
+## Run the code
+
+1. Clone the repository
+2. Install the requirements
+3. Start Ollama (`ollama serve` and then `ollama pull llama3.2`)
+4. Start the duet
+
+```bash
+poetry install
+poetry run python ollama-duet/main.py
+```

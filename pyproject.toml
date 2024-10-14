@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "llmloop"
+name = "ollama-duet"
 version = "0.1.0"
 description = ""
 authors = ["Christian Dalager <christian.dalager@eksponent.com>"]
