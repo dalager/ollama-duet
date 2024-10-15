@@ -9,6 +9,8 @@ Let two Ollama models talk to each other.
 Sample code to let two Ollama models talk to each other.
 Currently two Llama3.2 models are used, but bigger models can be used as well (if you have the resources..)
 
+A little buggy at the moment, so gives some weird results. Help me fix it, if you are bored :)
+
 <br clear="right"/>
 
 ## Model A - The Cat
