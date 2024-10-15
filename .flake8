@@ -1,0 +1,3 @@
+# allow longer lines
+[flake8]
+max-line-length = 130
