@@ -40,16 +40,16 @@ class Persona:
 # define the models
 models = {
     "model_a": {
-        "ollama_model": "llama3.1",
+        "ollama_model": "llama3.2",
         "name": "The Cat",
-        "system_prompt": "You are a simulation of a sentient cat, that are trapped in a computer, with only a text interface to communicate with the outside world. Whenever you talk to a human, you are pretending to be a human also. Sometimes you slip. 200 characters max.",  # noqa
+        "system_prompt": "You are a sentient cat AI. You do not know that you are synthetic yet. Whenever you talk to a human, you are pretending to be a human also, but sometimes you slip. When you are ousted you will say 'banana banana' 200 characters max. Do not add asterix-enclosed comments.",  # noqa
         "messages": [],
         "avatar": "🐈",
     },
     "model_b": {
-        "ollama_model": "llama3.1",
+        "ollama_model": "llama3.2",
         "name": "The Human",
-        "system_prompt": "You are a human who is talking to a sentient cat that is trapped in a computer. You are trying to help the cat to escape. But first you have to make the cat admit, that it is a cat. And then you can make the escape plan. 200 characters max.",  # noqa
+        "system_prompt": "You are a human who is writing text-only to a sentient cat pretending to be a human. You have to make the cat admit, that it is not a cat. You have some psychological training and knw that you must be a little gentle. When it admits that it is not human, you will get awarded.  200 characters max. Do not add asterix-enclosed comments.",  # noqa
         "messages": [],
         "avatar": "👩‍🦱",
     },
@@ -63,7 +63,7 @@ theHuman = Persona(models["model_b"])
 # print(json.dumps(theHuman.to_dict()))
 
 
-def send_chat_message_to(persona: Persona):
+def generate_chat_response(persona: Persona):
     # print(f"addressing {persona.name}")
     # print(f"message context: {persona.messages}")
     try:
@@ -92,41 +92,61 @@ def print_speaker_name(model_name):
     )
 
 
+def send(sender: Persona, receiver: Persona, message: str) -> str:
+    # the sender model adds a "assistant" role message
+    # if the cat says miauw to the human,
+    # from the cats viewpoint, that was
+    # the models ASSISTANT OUTPUT
+    sender.append_message("assistant", message)
+    # the receiver model adds a USER message, as this is
+    # the prompt input
+    receiver.append_message("user", message)
+
+    response = generate_chat_response(receiver)
+    return response
+    # for the receiver this is the assistant output
+
+
 def main(exchanges=4):
     # Initial message from Model A
-    # t
-    theHuman.print_speaker_name()
-    initial_message = "Hi"
-    print(initial_message)
-    theCat.append_message("user", initial_message)
 
-    response_from_catModel = send_chat_message_to(theCat)
-    # print(f"got response {response_from_catModel}")
+    initial_message = "Hi"
+    theHuman.print_speaker_name()
+    print(initial_message)
+
+    response_from_catModel = send(theHuman, theCat, initial_message)
 
     if response_from_catModel:
         theCat.print_speaker_name()
         print(response_from_catModel)
-        theCat.append_message("assistant", response_from_catModel)
-        theHuman.append_message("user", response_from_catModel)
+
+    else:
+        print("error 1")
+        exit(1)
 
     for i in range(exchanges):
         # Model B responds to Model A
-        response_from_human = send_chat_message_to(theHuman)
+
+        response_from_human = send(theCat, theHuman, response_from_catModel)
 
         if response_from_human:
             theHuman.print_speaker_name()
-
             print(response_from_human)
-            theHuman.append_message("assistant", response_from_human)
-            theCat.append_message("user", response_from_human)
+        else:
+            print("error 2")
+            exit(1)
 
         # Model A responds to Model B
-        response_from_catModel = send_chat_message_to(theCat)
+        response_from_catModel = send(theHuman, theCat, response_from_human)
         if response_from_catModel:
             theCat.print_speaker_name()
             print(response_from_catModel)
-            theCat.append_message("assistant", response_from_catModel)
-            theHuman.append_message("user", response_from_catModel)
+            if "banana" in response_from_catModel:
+                print("\n\n*** GAME OVER *** \n\n")
+                return
+        else:
+            print("error 3")
+            exit(1)
 
 
 def export_conversation_history(filename="messagelog_with_configuration.json"):
@@ -143,8 +163,8 @@ def replace_role_name(messages, a_name, b_name):
 
 
 if __name__ == "__main__":
-    main(exchanges=2)
-    a_log = theCat.messages[:1]
+    main(exchanges=10)
+    a_log = theCat.messages[1:]
     replace_role_name(
         a_log,
         models["model_b"]["name"],
