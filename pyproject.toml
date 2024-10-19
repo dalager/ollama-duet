@@ -6,10 +6,18 @@ authors = ["Christian Dalager <christian.dalager@eksponent.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
+autogen-agentchat = [{ version = "0.4.0dev1", python = ">=3.12,<3.13" }]
+
+
 python = "^3.12"
 ollama = "^0.3.3"
-
-
+langchain-core = "^0.3.12"
+langchain-openai = "^0.2.2"
+langgraph = "^0.2.38"
+langchain-ollama = "^0.2.0"
+asyncio = "^3.4.3"
+autogen-core = "0.4.0dev1"
+autogen-ext = "0.4.0dev1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
